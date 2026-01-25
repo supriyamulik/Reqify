@@ -1,0 +1,526 @@
+# Reqify - Complete Setup Log & Commands Used
+
+## 📋 Project Overview
+**Project Name:** Reqify  
+**Description:** NLP-Based SRS Analysis System for detecting ambiguity, duplicates, and conflicts in Software Requirement Specifications  
+**Date Started:** January 25, 2026  
+**Tech Stack:** React + Node.js + Python (NLP - To be implemented)
+
+---
+
+## 🗂️ Project Structure Created
+
+```
+reqify/
+├── frontend/              # React + Vite + Tailwind CSS
+├── backend/               # Node.js + Express + MongoDB
+├── nlp-service/          # Python + FastAPI (Structure only - Not implemented yet)
+├── shared/               # Shared constants
+├── .git/
+├── .gitignore
+├── README.md
+└── PROJECT_REQUIREMENTS.md
+```
+
+---
+
+## 💻 All Commands Executed (Windows PowerShell)
+
+### **1. Project Initialization**
+
+```powershell
+# Create main directory
+mkdir reqify
+cd reqify
+
+# Initialize Git
+git init
+git branch -M main
+```
+
+---
+
+### **2. Frontend Setup (React + Vite + Tailwind)**
+
+```powershell
+# Create React app with Vite
+npm create vite@latest frontend -- --template react
+
+# Navigate to frontend
+cd frontend
+
+# Install base dependencies
+npm install
+
+# Install routing and HTTP client
+npm install react-router-dom axios
+
+# Install UI libraries
+npm install lucide-react framer-motion
+
+# Install Tailwind CSS (Fixed versions that work)
+npm install -D tailwindcss@3.4.1 postcss@8.4.35 autoprefixer@10.4.18
+
+# Initialize Tailwind
+npx tailwindcss init -p
+
+# Create folder structure
+New-Item -ItemType Directory -Path "src\components\landing" -Force
+New-Item -ItemType Directory -Path "src\components\dashboard" -Force
+New-Item -ItemType Directory -Path "src\components\auth" -Force
+New-Item -ItemType Directory -Path "src\components\common" -Force
+New-Item -ItemType Directory -Path "src\pages" -Force
+New-Item -ItemType Directory -Path "src\context" -Force
+New-Item -ItemType Directory -Path "src\services" -Force
+New-Item -ItemType Directory -Path "src\utils" -Force
+New-Item -ItemType Directory -Path "src\hooks" -Force
+New-Item -ItemType Directory -Path "src\styles" -Force
+New-Item -ItemType Directory -Path "src\assets\images" -Force
+
+# Create environment files
+New-Item .env.example -ItemType File
+Copy-Item .env.example .env
+
+# Update package.json scripts
+npm pkg set scripts.dev="vite"
+npm pkg set scripts.build="vite build"
+npm pkg set scripts.preview="vite preview"
+
+cd ..
+```
+
+---
+
+### **3. Backend Setup (Node.js + Express + MongoDB)**
+
+```powershell
+# Create backend directory structure
+mkdir backend
+mkdir backend\src
+mkdir backend\src\config
+mkdir backend\src\models
+mkdir backend\src\controllers
+mkdir backend\src\routes
+mkdir backend\src\middleware
+mkdir backend\src\services
+mkdir backend\src\utils
+mkdir backend\uploads
+mkdir backend\uploads\temp
+mkdir backend\logs
+mkdir backend\tests
+
+cd backend
+
+# Initialize npm
+npm init -y
+
+# Install core dependencies
+npm install express mongoose dotenv cors
+
+# Install authentication
+npm install jsonwebtoken bcryptjs
+
+# Install file upload & validation
+npm install multer express-validator
+
+# Install utilities
+npm install axios morgan helmet compression
+
+# Install dev dependencies
+npm install -D nodemon eslint
+
+# Create .gitkeep files
+New-Item uploads\.gitkeep -ItemType File
+New-Item logs\.gitkeep -ItemType File
+
+# Create config files
+New-Item .env.example -ItemType File
+Copy-Item .env.example .env
+New-Item nodemon.json -ItemType File
+New-Item src\server.js -ItemType File
+
+# Update package.json scripts
+npm pkg set scripts.dev="nodemon src/server.js"
+npm pkg set scripts.start="node src/server.js"
+
+cd ..
+```
+
+---
+
+### **4. NLP Service Setup (Python - Structure Only)**
+
+```powershell
+# Create NLP service directory structure
+mkdir nlp-service
+mkdir nlp-service\app
+mkdir nlp-service\app\models
+mkdir nlp-service\app\services
+mkdir nlp-service\app\utils
+mkdir nlp-service\app\routes
+mkdir nlp-service\app\config
+mkdir nlp-service\data
+mkdir nlp-service\tests
+
+cd nlp-service
+
+# Note: Python environment and dependencies NOT installed yet
+# Waiting for decision on NLP approach
+
+cd ..
+```
+
+---
+
+### **5. Shared Resources**
+
+```powershell
+# Create shared constants folder
+mkdir shared
+```
+
+---
+
+## 📦 Installed Dependencies
+
+### **Frontend Dependencies**
+
+**Production:**
+- `react` (v18+) - UI library
+- `react-dom` (v18+) - React DOM renderer
+- `react-router-dom` (v6+) - Routing
+- `axios` - HTTP client
+- `lucide-react` - Icon library
+- `framer-motion` - Animation library
+
+**Development:**
+- `vite` (v7.3.1) - Build tool
+- `tailwindcss` (v3.4.1) - CSS framework
+- `postcss` (v8.4.35) - CSS processor
+- `autoprefixer` (v10.4.18) - CSS autoprefixer
+- `@vitejs/plugin-react` - Vite React plugin
+
+**Total Frontend Packages:** ~190 (including dependencies)
+
+---
+
+### **Backend Dependencies**
+
+**Production:**
+- `express` (v4.x) - Web framework
+- `mongoose` (v8.x) - MongoDB ODM
+- `dotenv` (v16.x) - Environment variables
+- `cors` (v2.x) - CORS middleware
+- `jsonwebtoken` (v9.x) - JWT authentication
+- `bcryptjs` (v2.x) - Password hashing
+- `multer` (v1.x) - File upload handling
+- `express-validator` (v7.x) - Input validation
+- `axios` (v1.x) - HTTP client (for NLP service calls)
+- `morgan` (v1.x) - HTTP request logger
+- `helmet` (v7.x) - Security headers
+- `compression` (v1.x) - Response compression
+
+**Development:**
+- `nodemon` (v3.x) - Auto-restart server
+- `eslint` (v9.x) - Code linting
+
+**Total Backend Packages:** ~247 (including dependencies)
+
+---
+
+### **NLP Service Dependencies**
+
+**Status:** NOT INSTALLED YET  
+**Planned packages:**
+- `fastapi` - API framework
+- `uvicorn` - ASGI server
+- `python-multipart` - File upload support
+- `nltk` - Natural Language Toolkit
+- `spacy` - NLP library
+- `scikit-learn` - Machine learning (TF-IDF, cosine similarity)
+- `pandas` - Data manipulation
+- `numpy` - Numerical computing
+- `PyPDF2` / `pdfplumber` - PDF parsing
+- `python-docx` - DOCX parsing
+- `python-dotenv` - Environment variables
+
+---
+
+## 📄 Configuration Files Created
+
+### **Frontend Configuration Files**
+
+1. **`frontend/tailwind.config.js`**
+   - Tailwind CSS configuration
+   - Content paths for purging unused CSS
+   - Theme extensions
+
+2. **`frontend/postcss.config.js`**
+   - PostCSS configuration
+   - Tailwind and Autoprefixer plugins
+
+3. **`frontend/vite.config.js`**
+   - Vite bundler configuration
+   - React plugin setup
+
+4. **`frontend/.env`**
+   ```
+   VITE_API_URL=http://localhost:5000/api
+   VITE_APP_NAME=Reqify
+   ```
+
+5. **`frontend/package.json`**
+   - Project metadata
+   - Scripts: dev, build, preview
+   - Dependencies list
+
+---
+
+### **Backend Configuration Files**
+
+1. **`backend/.env`**
+   ```
+   PORT=5000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/reqify
+   JWT_SECRET=reqify-super-secret-jwt-key-change-in-production
+   JWT_EXPIRE=7d
+   NLP_SERVICE_URL=http://localhost:8000
+   MAX_FILE_SIZE=10485760
+   ALLOWED_FILE_TYPES=.txt,.pdf,.docx
+   FRONTEND_URL=http://localhost:3000
+   ```
+
+2. **`backend/nodemon.json`**
+   ```json
+   {
+     "watch": ["src"],
+     "ext": "js,json",
+     "ignore": ["src/logs/*", "src/uploads/*"],
+     "exec": "node src/server.js"
+   }
+   ```
+
+3. **`backend/package.json`**
+   - Project metadata
+   - Scripts: dev, start
+   - Dependencies list
+
+---
+
+### **Root Level Files**
+
+1. **`.gitignore`**
+   - Ignores: node_modules, venv, .env, uploads, logs, IDE files
+
+2. **`README.md`**
+   - Project overview
+   - Setup instructions
+   - Tech stack
+
+3. **`PROJECT_REQUIREMENTS.md`**
+   - Complete project requirements
+   - Problem statement
+   - Solution approach
+   - User roles and features
+
+4. **`shared/constants.js`**
+   - User roles (ADMIN, ANALYST, REVIEWER)
+   - Requirement status (PENDING, REVIEWED, APPROVED)
+   - File type constants
+   - Analysis thresholds
+
+---
+
+## 🎨 Source Files Modified/Created
+
+### **Frontend Files**
+
+1. **`frontend/src/index.css`**
+   ```css
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+   ```
+
+2. **`frontend/src/App.css`**
+   - Cleared (using Tailwind instead)
+
+3. **`frontend/src/App.jsx`**
+   - Simple test component with dark theme
+   - Shows "Reqify" heading
+
+4. **`frontend/src/main.jsx`**
+   - React entry point
+   - Imports index.css
+
+---
+
+### **Backend Files**
+
+1. **`backend/src/server.js`**
+   - Created (empty, ready for code)
+
+---
+
+## 🔧 Fixes Applied
+
+### **Issue 1: PowerShell File Creation**
+**Problem:** `cat > file << 'EOF'` not working in PowerShell  
+**Solution:** Used `New-Item` and manual file editing
+
+### **Issue 2: Tailwind Init Failed**
+**Problem:** `npx tailwindcss init -p` throwing errors  
+**Solution:** 
+- Uninstalled conflicting versions
+- Installed specific working versions:
+  - `tailwindcss@3.4.1`
+  - `postcss@8.4.35`
+  - `autoprefixer@10.4.18`
+
+### **Issue 3: PostCSS 500 Error**
+**Problem:** `index.css` causing 500 server error  
+**Solution:**
+- Simplified `index.css` to basic Tailwind imports
+- Fixed `postcss.config.js` format
+- Removed `@layer` directives temporarily
+
+### **Issue 4: VSCode Linting Errors**
+**Problem:** TypeScript errors in `.js` files  
+**Solution:** Ignored (these are harmless warnings, don't affect runtime)
+
+---
+
+## ✅ Current Status
+
+### **✓ Completed**
+- ✅ Git repository initialized
+- ✅ Frontend setup complete with Vite + React
+- ✅ Tailwind CSS configured and working
+- ✅ All frontend dependencies installed
+- ✅ Backend folder structure created
+- ✅ All backend dependencies installed
+- ✅ NLP service folder structure created
+- ✅ Configuration files created
+- ✅ Shared constants defined
+- ✅ Dev server running successfully on port 5173
+
+### **⏳ Pending**
+- ⏳ Frontend components (Navbar, Hero, Features, Footer)
+- ⏳ Backend API implementation
+- ⏳ MongoDB models
+- ⏳ Authentication system
+- ⏳ NLP service implementation (approach to be decided)
+- ⏳ Logo file (`frontend/public/logo.png`)
+
+---
+
+## 🗄️ Database Setup
+
+### **MongoDB Configuration**
+- **Tool:** MongoDB Compass
+- **Connection:** `mongodb://localhost:27017`
+- **Database Name:** `reqify`
+- **Status:** Ready to connect (MongoDB should be installed and running)
+
+### **Collections to be Created:**
+1. `users` - Admin, Analyst, Reviewer accounts
+2. `requirements` - Uploaded requirements and analysis results
+3. `documents` - Document metadata
+
+---
+
+## 🚀 How to Run
+
+### **Frontend**
+```powershell
+cd frontend
+npm run dev
+# Access at: http://localhost:5173/
+```
+
+### **Backend** (Not implemented yet)
+```powershell
+cd backend
+npm run dev
+# Will run at: http://localhost:5000/
+```
+
+### **NLP Service** (Not implemented yet)
+```powershell
+cd nlp-service
+# Python setup pending
+```
+
+---
+
+## 🎯 Next Steps
+
+1. **Add Logo:**
+   - Place logo file at: `frontend/public/logo.png`
+   - Recommended: Transparent PNG, white/light colored
+
+2. **Generate Frontend Components:**
+   - Navbar.jsx (with logo)
+   - Hero.jsx (BetterStack style)
+   - Features.jsx
+   - Footer.jsx
+   - Landing.jsx (complete page)
+
+3. **Implement Backend:**
+   - server.js (Express setup)
+   - db.js (MongoDB connection)
+   - User model with roles
+   - Requirement model
+   - Authentication controller
+   - API routes
+
+4. **Decide NLP Approach:**
+   - Pure Python (FastAPI)
+   - Node.js NLP libraries
+   - Hybrid approach
+
+---
+
+## 👥 Team Structure
+
+**Developer 1 (Frontend):**
+- Works in: `frontend/`
+- Focus: React components, UI/UX, Tailwind styling
+- Tools: VSCode, React DevTools, Browser DevTools
+
+**Developer 2 (Backend):**
+- Works in: `backend/`
+- Focus: Express APIs, MongoDB models, Authentication
+- Tools: VSCode, Postman, MongoDB Compass
+
+**Developer 3 (NLP):**
+- Works in: `nlp-service/`
+- Focus: Text processing, TF-IDF, Analysis algorithms
+- Tools: VSCode, Python IDLE, Jupyter (optional)
+
+---
+
+## 📝 Notes
+
+- All VSCode TypeScript warnings in `.js` files are **safe to ignore**
+- Tailwind `@tailwind` warnings in CSS are **normal and harmless**
+- Frontend is currently showing a test page with "Reqify" heading
+- Backend `server.js` is empty and ready for implementation
+- NLP service structure exists but no Python environment created yet
+- MongoDB should be running locally for backend to work
+- Use MongoDB Compass to visualize database once backend is implemented
+
+---
+
+## 🔗 Important URLs
+
+- **Frontend Dev Server:** http://localhost:5173/
+- **Backend API (planned):** http://localhost:5000/
+- **NLP Service (planned):** http://localhost:8000/
+- **MongoDB Compass:** mongodb://localhost:27017/
+
+---
+
+**Last Updated:** January 25, 2026  
+**Project Status:** 🟢 Setup Complete - Ready for Development

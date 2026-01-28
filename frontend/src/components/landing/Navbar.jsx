@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,21 +17,21 @@ const Navbar = () => {
     return (
         <nav
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                    ? 'bg-gray-950/60 backdrop-blur-2xl border-b border-white/5 shadow-2xl'
-                    : 'bg-transparent'
+                ? 'bg-gray-950/60 backdrop-blur-2xl border-b border-white/5 shadow-2xl'
+                : 'bg-transparent'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <div className="flex items-center space-x-3 group cursor-pointer">
+                    <Link to="/" className="flex items-center space-x-3 group">
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all duration-300">
                             <span className="text-white font-bold text-sm">R</span>
                         </div>
                         <span className="text-xl font-semibold text-white tracking-tight">
                             Reqify
                         </span>
-                    </div>
+                    </Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-1">
@@ -48,17 +49,24 @@ const Navbar = () => {
 
                     {/* CTA Buttons */}
                     <div className="hidden lg:flex items-center space-x-3">
-                        <button className="px-5 py-2.5 text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium">
+                        <Link
+                            to="/login"
+                            className="px-5 py-2.5 text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium"
+                        >
                             Sign in
-                        </button>
-                        <button className="relative group px-6 py-2.5 rounded-xl font-medium text-sm text-white overflow-hidden transition-all duration-300 hover:scale-105">
+                        </Link>
+
+                        <Link
+                            to="/signup"
+                            className="relative group px-6 py-2.5 rounded-xl font-medium text-sm text-white overflow-hidden transition-all duration-300 hover:scale-105"
+                        >
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 group-hover:from-indigo-500 group-hover:via-purple-500 group-hover:to-indigo-500 transition-all duration-300" />
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300" />
                             <span className="relative z-10">Get Started</span>
-                        </button>
+                        </Link>
                     </div>
 
-                    {/* Mobile menu button */}
+                    {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="lg:hidden text-gray-300 hover:text-white transition-colors p-2"
@@ -82,13 +90,23 @@ const Navbar = () => {
                                 {item}
                             </a>
                         ))}
+
                         <div className="pt-4 space-y-3 border-t border-white/5">
-                            <button className="w-full text-gray-300 hover:text-white py-3 text-base font-medium transition-colors">
+                            <Link
+                                to="/login"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block text-gray-300 hover:text-white py-3 text-base font-medium text-center"
+                            >
                                 Sign in
-                            </button>
-                            <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-6 py-3 rounded-xl text-base font-medium transition-all shadow-lg shadow-indigo-500/30">
+                            </Link>
+
+                            <Link
+                                to="/signup"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-6 py-3 rounded-xl text-base font-medium text-center shadow-lg shadow-indigo-500/30"
+                            >
                                 Get Started
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

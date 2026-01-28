@@ -3,6 +3,12 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
     {
+        organizationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Organization',
+            required: [true, 'Organization is required'],
+            index: true
+        },
         name: {
             type: String,
             required: [true, 'Name is required'],
@@ -13,7 +19,6 @@ const userSchema = new mongoose.Schema(
         email: {
             type: String,
             required: [true, 'Email is required'],
-            unique: true,
             lowercase: true,
             trim: true,
             match: [
@@ -25,43 +30,71 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Password is required'],
             minlength: [6, 'Password must be at least 6 characters'],
-            select: false // Don't return password by default
+            select: false
         },
         role: {
             type: String,
             enum: {
-                values: ['admin', 'analyst', 'reviewer'],
-                message: 'Role must be admin, analyst, or reviewer'
+                values: ['owner', 'admin', 'analyst', 'reviewer'],
+                message: 'Role must be owner, admin, analyst, or reviewer'
             },
-            default: 'analyst'
+            required: true
+        },
+        avatar: {
+            type: String
         },
         isActive: {
             type: Boolean,
             default: true
         },
+        isEmailVerified: {
+            type: Boolean,
+            default: false
+        },
+        emailVerificationToken: {
+            type: String,
+            select: false
+        },
+        resetPasswordToken: {
+            type: String,
+            select: false
+        },
+        resetPasswordExpire: {
+            type: Date,
+            select: false
+        },
         lastLogin: {
             type: Date
+        },
+        preferences: {
+            theme: {
+                type: String,
+                enum: ['light', 'dark', 'auto'],
+                default: 'dark'
+            },
+            notifications: {
+                email: { type: Boolean, default: true },
+                inApp: { type: Boolean, default: true }
+            }
         }
     },
     {
-        timestamps: true // Adds createdAt and updatedAt
+        timestamps: true
     }
 );
 
-// Hash password before saving
-userSchema.pre('save', async function (next) {
+// Compound index for email uniqueness within organization
+userSchema.index({ email: 1, organizationId: 1 }, { unique: true });
+
+// Hash password before saving - FIXED VERSION
+userSchema.pre('save', async function () {
     // Only hash if password is modified
     if (!this.isModified('password')) {
-        return next();
+        return;
     }
 
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Method to compare password
@@ -73,7 +106,33 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 userSchema.methods.toJSON = function () {
     const user = this.toObject();
     delete user.password;
+    delete user.emailVerificationToken;
+    delete user.resetPasswordToken;
+    delete user.resetPasswordExpire;
     return user;
 };
+
+// Method to check if user is owner
+userSchema.methods.isOwner = function () {
+    return this.role === 'owner';
+};
+
+// Method to check if user is admin or owner
+userSchema.methods.isAdminOrOwner = function () {
+    return ['owner', 'admin'].includes(this.role);
+};
+
+// Method to check if user can manage other users
+userSchema.methods.canManageUsers = function () {
+    return ['owner', 'admin'].includes(this.role);
+};
+
+// Virtual for full organization details
+userSchema.virtual('organization', {
+    ref: 'Organization',
+    localField: 'organizationId',
+    foreignField: '_id',
+    justOne: true
+});
 
 module.exports = mongoose.model('User', userSchema);

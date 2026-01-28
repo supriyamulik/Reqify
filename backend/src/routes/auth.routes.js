@@ -2,32 +2,24 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
-const roleMiddleware = require('../middleware/roleCheck');
+const { organizationContext } = require('../middleware/organizationContext');
 
 // Public routes
-router.post('/register', authController.register);
 router.post('/login', authController.login);
 
 // Protected routes (require authentication)
-router.get('/me', authMiddleware, authController.getMe);
+router.use(authMiddleware);
+router.use(organizationContext);
 
-// Admin only routes
-router.get('/users',
-    authMiddleware,
-    roleMiddleware(['admin']),
-    authController.getAllUsers
-);
+// User profile routes
+router.get('/me', authController.getMe);
+router.patch('/profile', authController.updateProfile);
+router.patch('/change-password', authController.changePassword);
 
-router.patch('/users/:userId/role',
-    authMiddleware,
-    roleMiddleware(['admin']),
-    authController.changeUserRole
-);
-
-router.patch('/users/:userId/toggle-status',
-    authMiddleware,
-    roleMiddleware(['admin']),
-    authController.toggleUserStatus
-);
+// User management routes (Owner/Admin only)
+router.get('/users', authController.getAllUsers);
+router.patch('/users/:userId/role', authController.changeUserRole);
+router.patch('/users/:userId/toggle-status', authController.toggleUserStatus);
+router.delete('/users/:userId', authController.deleteUser);
 
 module.exports = router;

@@ -101,11 +101,17 @@ const OrganizationSignup = () => {
             >
                 {/* Logo */}
                 <Link to="/" className="absolute top-8 left-12 xl:left-20">
-                    <div className="flex items-center space-x-3 group cursor-pointer">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all duration-300">
-                            <span className="text-white text-xl font-bold">R</span>
+                    <div className="flex items-center space-x-4 group cursor-pointer">
+                        <div className="relative w-12 h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                            <img
+                                src="/reqify-logo.png"
+                                alt="Reqify Logo"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                            />
                         </div>
-                        <span className="text-2xl font-bold text-white">Reqify</span>
+                        <span className="text-2xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent group-hover:from-purple-200 group-hover:via-white group-hover:to-purple-200 transition-all duration-300" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
+                            Reqify
+                        </span>
                     </div>
                 </Link>
 
@@ -179,11 +185,17 @@ const OrganizationSignup = () => {
             >
                 {/* Mobile Logo */}
                 <Link to="/" className="absolute top-8 left-6 lg:hidden">
-                    <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                            <span className="text-white text-lg font-bold">R</span>
+                    <div className="flex items-center space-x-3 group">
+                        <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                            <img
+                                src="/reqify-logo.png"
+                                alt="Reqify Logo"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                            />
                         </div>
-                        <span className="text-xl font-bold text-white">Reqify</span>
+                        <span className="text-xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
+                            Reqify
+                        </span>
                     </div>
                 </Link>
 
@@ -260,7 +272,7 @@ const OrganizationSignup = () => {
                                             value={formData.ownerName}
                                             onChange={handleChange}
                                             required
-                                            placeholder="John Doe"
+                                            placeholder="Rutuja"
                                             className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300"
                                         />
                                     </div>
@@ -282,7 +294,7 @@ const OrganizationSignup = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             required
-                                            placeholder="john@acme.com"
+                                            placeholder="rutu@acme.com"
                                             className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300"
                                         />
                                     </div>

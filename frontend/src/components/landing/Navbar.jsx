@@ -16,24 +16,23 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                ? 'bg-gray-950/60 backdrop-blur-2xl border-b border-white/5 shadow-2xl'
-                : 'bg-transparent'
-                }`}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gray-950/60 backdrop-blur-2xl border-b border-white/5 shadow-2xl' : 'bg-transparent'}`}
         >
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-3 group">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all duration-300">
-                            <span className="text-white font-bold text-sm">R</span>
+                    <Link to="/" className="flex items-center space-x-4 group">
+                        <div className="relative w-14 h-14 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                            <img
+                                src="/reqify-logo.png"
+                                alt="Reqify Logo"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                            />
                         </div>
-                        <span className="text-xl font-semibold text-white tracking-tight">
+                        <span className="text-2xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent hover:from-purple-200 hover:via-white hover:to-purple-200 transition-all duration-300" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
                             Reqify
                         </span>
                     </Link>
 
-                    {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-1">
                         {['Features', 'How It Works', 'Modules', 'Pricing'].map((item) => (
                             <a
@@ -47,7 +46,6 @@ const Navbar = () => {
                         ))}
                     </div>
 
-                    {/* CTA Buttons */}
                     <div className="hidden lg:flex items-center space-x-3">
                         <Link
                             to="/login"
@@ -66,7 +64,6 @@ const Navbar = () => {
                         </Link>
                     </div>
 
-                    {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="lg:hidden text-gray-300 hover:text-white transition-colors p-2"
@@ -76,7 +73,6 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
             {isMenuOpen && (
                 <div className="lg:hidden bg-gray-950/95 backdrop-blur-2xl border-t border-white/5">
                     <div className="px-6 py-6 space-y-4">

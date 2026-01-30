@@ -141,6 +141,22 @@ const AcceptInvite = () => {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="relative hidden lg:flex lg:w-1/2 flex-col justify-center px-12 xl:px-20"
             >
+                {/* Logo */}
+                <Link to="/" className="absolute top-8 left-12 xl:left-20">
+                    <div className="flex items-center space-x-4 group cursor-pointer">
+                        <div className="relative w-12 h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                            <img
+                                src="/reqify-logo.png"
+                                alt="Reqify Logo"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                            />
+                        </div>
+                        <span className="text-2xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent group-hover:from-purple-200 group-hover:via-white group-hover:to-purple-200 transition-all duration-300" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
+                            Reqify
+                        </span>
+                    </div>
+                </Link>
+
                 <div className="space-y-6 max-w-lg">
                     {/* Badge */}
                     <motion.div
@@ -213,6 +229,22 @@ const AcceptInvite = () => {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="relative flex-1 flex items-center justify-center px-6 py-12 lg:px-12"
             >
+                {/* Mobile Logo */}
+                <Link to="/" className="absolute top-8 left-6 lg:hidden">
+                    <div className="flex items-center space-x-3 group">
+                        <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                            <img
+                                src="/reqify-logo.png"
+                                alt="Reqify Logo"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                            />
+                        </div>
+                        <span className="text-xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
+                            Reqify
+                        </span>
+                    </div>
+                </Link>
+
                 {/* Form Card */}
                 <div className="w-full max-w-md">
                     <div className="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">

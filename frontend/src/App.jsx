@@ -2,32 +2,51 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
-// Pages
+
+// Public Pages
 import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 import OrganizationSignup from './pages/auth/OrganizationSignup';
+import AcceptInvite from './pages/auth/AcceptInvite';
 
-// TODO: Create these pages
-// import AcceptInvite from './pages/auth/AcceptInvite';
+// Dashboard Pages
+import OwnerDashboard from './pages/dashboard/OwnerDashboard';
+import AnalystDashboard from './pages/dashboard/AnalystDashboard';
+import ReviewerDashboard from './pages/dashboard/ReviewerDashboard';
 
-// Temporary dashboard placeholders
+// Role-based Dashboard Router Component
 const WorkspaceDashboard = () => {
-  // This will show different content based on user role
   const { user } = useAuth();
 
+  // Redirect based on role
+  if (user?.role === 'owner' || user?.role === 'admin') {
+    return <OwnerDashboard />;
+  } else if (user?.role === 'analyst') {
+    return <AnalystDashboard />;
+  } else if (user?.role === 'reviewer') {
+    return <ReviewerDashboard />;
+  }
+
+  // Fallback - should not reach here if auth is working
   return (
     <div className="min-h-screen bg-[#0a0b0f] text-white flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">
-          {user?.role === 'owner' && 'Owner Dashboard'}
-          {user?.role === 'admin' && 'Admin Dashboard'}
-          {user?.role === 'analyst' && 'Analyst Dashboard'}
-          {user?.role === 'reviewer' && 'Reviewer Dashboard'}
+        <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
+        <p className="text-gray-400">Invalid role or authentication failed</p>
+      </div>
+    </div>
+  );
+};
+
+// Placeholder component for "Coming Soon" pages
+const ComingSoonPage = ({ title }) => {
+  return (
+    <div className="min-h-screen bg-[#0a0b0f] text-white flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+          {title}
         </h1>
         <p className="text-gray-400">Coming soon...</p>
-        <p className="text-gray-500 text-sm mt-2">
-          Organization: {user?.organization?.name}
-        </p>
       </div>
     </div>
   );
@@ -38,37 +57,157 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public Routes */}
+          {/* ========== PUBLIC ROUTES ========== */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<OrganizationSignup />} />
+          <Route path="/accept-invite/:token" element={<AcceptInvite />} />
 
-          {/* Accept Invitation - TODO: Create this component */}
-          {/* <Route path="/accept-invite/:token" element={<AcceptInvite />} /> */}
+          {/* ========== WORKSPACE ROUTES ========== */}
+          <Route path="/workspace/:slug">
+            {/* Dashboard - All Authenticated Users */}
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <WorkspaceDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Multi-Tenant Workspace Routes */}
-          <Route
-            path="/workspace/:slug/*"
-            element={
-              <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
-                <Routes>
-                  <Route path="dashboard" element={<WorkspaceDashboard />} />
-                  {/* Add more workspace routes here later */}
-                  {/* <Route path="team" element={<TeamManagement />} /> */}
-                  {/* <Route path="upload" element={<UploadPage />} /> */}
-                  {/* <Route path="requirements" element={<RequirementsList />} /> */}
-                  <Route path="*" element={<Navigate to="dashboard" replace />} />
-                </Routes>
-              </ProtectedRoute>
-            }
-          />
+            {/* Team Management - Owner/Admin Only */}
+            <Route
+              path="team"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin']}>
+                  <ComingSoonPage title="Team Management" />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Legacy routes - redirect to workspace */}
-          <Route path="/admin/*" element={<Navigate to="/workspace" replace />} />
-          <Route path="/analyst/*" element={<Navigate to="/workspace" replace />} />
-          <Route path="/reviewer/*" element={<Navigate to="/workspace" replace />} />
+            {/* Upload - Owner/Admin/Analyst */}
+            <Route
+              path="upload"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst']}>
+                  <ComingSoonPage title="Upload Documents" />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Catch-all */}
+            {/* Requirements - All Authenticated Users */}
+            <Route
+              path="requirements"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Requirements" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Requirements Detail - All Authenticated Users */}
+            <Route
+              path="requirements/:id"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Requirement Details" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Analytics - Owner/Admin/Analyst */}
+            <Route
+              path="analytics"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst']}>
+                  <ComingSoonPage title="Analytics" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Review Queue - Owner/Admin/Reviewer */}
+            <Route
+              path="review"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'reviewer']}>
+                  <ComingSoonPage title="Review Queue" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Review Detail - Owner/Admin/Reviewer */}
+            <Route
+              path="review/:id"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'reviewer']}>
+                  <ComingSoonPage title="Review Details" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Approved - Owner/Admin/Reviewer */}
+            <Route
+              path="approved"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'reviewer']}>
+                  <ComingSoonPage title="Approved Requirements" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rejected - Owner/Admin/Reviewer */}
+            <Route
+              path="rejected"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'reviewer']}>
+                  <ComingSoonPage title="Rejected Requirements" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Activity - All Authenticated Users */}
+            <Route
+              path="activity"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Activity Log" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Settings - All Authenticated Users */}
+            <Route
+              path="settings"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Settings" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Profile - All Authenticated Users */}
+            <Route
+              path="profile"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Profile" />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Workspace root - redirect to dashboard */}
+            <Route path="" element={<Navigate to="dashboard" replace />} />
+
+            {/* Catch-all for workspace - redirect to dashboard */}
+            <Route path="*" element={<Navigate to="dashboard" replace />} />
+          </Route>
+
+          {/* ========== LEGACY ROUTES REDIRECT ========== */}
+          <Route path="/admin/*" element={<Navigate to="/" replace />} />
+          <Route path="/analyst/*" element={<Navigate to="/" replace />} />
+          <Route path="/reviewer/*" element={<Navigate to="/" replace />} />
+
+          {/* ========== CATCH-ALL ========== */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

@@ -44,11 +44,17 @@ const Footer = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 mb-16">
                     {/* Brand */}
                     <div className="col-span-2">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                                <span className="text-white font-bold text-sm">R</span>
+                        <div className="flex items-center space-x-4 mb-6 group cursor-pointer">
+                            <div className="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                                <img
+                                    src="/reqify-logo.png"
+                                    alt="Reqify Logo"
+                                    className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                                />
                             </div>
-                            <span className="text-xl font-semibold text-white">Reqify</span>
+                            <span className="text-2xl font-bold text-white tracking-wide bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent group-hover:from-purple-200 group-hover:via-white group-hover:to-purple-200 transition-all duration-300" style={{ fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.02em' }}>
+                                Reqify
+                            </span>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-xs font-light">
                             AI-powered requirement analysis platform. Ship better software with clear, conflict-free specifications.

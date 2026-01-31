@@ -2,128 +2,165 @@ const mongoose = require('mongoose');
 
 const requirementSchema = new mongoose.Schema(
   {
+    // Multi-tenant isolation
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Organization',
-      required: true,
+      required: [true, 'Organization is required'],
       index: true
     },
+
+    // Document reference
     documentId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Document',
+      required: [true, 'Document is required'],
       index: true
     },
-    documentName: {
+
+    // Requirement identification
+    requirementNumber: {
       type: String,
-      required: true
+      required: [true, 'Requirement number is required'],
+      trim: true
+      // Example: REQ-001, FR-001, NFR-001
     },
+
+    // Requirement content
     originalText: {
       type: String,
-      required: true
+      required: [true, 'Original text is required'],
+      trim: true
     },
-    processedText: {
-      type: String
+
+    rewrittenText: {
+      type: String,
+      default: null,
+      trim: true
     },
-    // Duplicate Detection
+
+    // Categorization
+    category: {
+      type: String,
+      enum: ['functional', 'non-functional', 'constraint', 'interface', 'other'],
+      default: 'functional'
+    },
+
+    subcategory: {
+      type: String,
+      default: null
+      // Examples: 'performance', 'security', 'usability', 'reliability'
+    },
+
+    // Priority
+    priority: {
+      type: String,
+      enum: ['high', 'medium', 'low'],
+      default: 'medium'
+    },
+
+    // Status tracking
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected', 'needs_review', 'rewritten'],
+      default: 'pending'
+    },
+
+    // Duplicate tracking
     isDuplicate: {
       type: Boolean,
       default: false
     },
+
     duplicateOf: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Requirement'
+      ref: 'Requirement',
+      default: null
     },
-    similarityScore: {
-      type: Number,
-      min: 0,
-      max: 1
-    },
-    // Conflict Detection
+
+    // Conflict tracking
     hasConflict: {
       type: Boolean,
       default: false
     },
-    conflictWith: [{
+
+    conflictsWith: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Requirement'
     }],
-    conflictReason: {
-      type: String
-    },
-    // Ambiguity Detection
+
+    // Ambiguity tracking
     isAmbiguous: {
       type: Boolean,
       default: false
     },
-    ambiguousWords: [{
-      word: String,
-      reason: String,
-      suggestion: String
-    }],
+
     ambiguityScore: {
       type: Number,
       min: 0,
-      max: 1
+      max: 100,
+      default: 0
     },
-    // AI Rewrite
-    rewrittenText: {
+
+    vaguePhrases: [{
       type: String
-    },
-    rewriteConfidence: {
-      type: Number,
-      min: 0,
-      max: 1
-    },
-    // Review & Approval
-    status: {
-      type: String,
-      enum: ['pending', 'under_review', 'approved', 'rejected', 'revised'],
-      default: 'pending'
-    },
-    reviewedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    reviewedAt: {
-      type: Date
-    },
-    reviewComments: [{
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      },
-      comment: String,
-      createdAt: {
-        type: Date,
-        default: Date.now
-      }
     }],
-    // Metadata
-    uploadedBy: {
+
+    // User tracking
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: [true, 'Creator is required']
     },
-    category: {
+
+    reviewedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    },
+
+    modifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    },
+
+    // Review information
+    reviewComments: {
       type: String,
-      enum: ['functional', 'non-functional', 'constraint', 'other'],
-      default: 'functional'
+      default: null
     },
-    priority: {
-      type: String,
-      enum: ['critical', 'high', 'medium', 'low'],
-      default: 'medium'
+
+    reviewedAt: {
+      type: Date,
+      default: null
     },
+
+    // Additional metadata
+    sourceLineNumber: {
+      type: Number,
+      default: null
+    },
+
+    sourcePage: {
+      type: Number,
+      default: null
+    },
+
     tags: [{
       type: String,
       trim: true
     }],
-    // Analysis metadata
-    analyzedAt: {
-      type: Date
+
+    // Soft delete
+    isDeleted: {
+      type: Boolean,
+      default: false
     },
-    nlpVersion: {
-      type: String // Track which NLP version analyzed this
+
+    deletedAt: {
+      type: Date,
+      default: null
     }
   },
   {
@@ -131,68 +168,128 @@ const requirementSchema = new mongoose.Schema(
   }
 );
 
-// Compound indexes for efficient queries
+// Compound indexes for better query performance
 requirementSchema.index({ organizationId: 1, documentId: 1 });
 requirementSchema.index({ organizationId: 1, status: 1 });
-requirementSchema.index({ organizationId: 1, uploadedBy: 1 });
-requirementSchema.index({ organizationId: 1, isDuplicate: 1 });
-requirementSchema.index({ organizationId: 1, hasConflict: 1 });
-requirementSchema.index({ organizationId: 1, isAmbiguous: 1 });
+requirementSchema.index({ documentId: 1, requirementNumber: 1 });
+requirementSchema.index({ isDuplicate: 1 });
+requirementSchema.index({ hasConflict: 1 });
+requirementSchema.index({ isAmbiguous: 1 });
+requirementSchema.index({ isDeleted: 1 });
 
-// Instance method to add review comment
-requirementSchema.methods.addComment = async function(userId, comment) {
-  this.reviewComments.push({
-    userId,
-    comment,
-    createdAt: new Date()
-  });
-  await this.save();
-};
+// Virtual for display text (shows rewritten if available, otherwise original)
+requirementSchema.virtual('displayText').get(function () {
+  return this.rewrittenText || this.originalText;
+});
 
-// Instance method to approve requirement
-requirementSchema.methods.approve = async function(userId) {
+// Virtual to check if requirement has issues
+requirementSchema.virtual('hasIssues').get(function () {
+  return this.isDuplicate || this.hasConflict || this.isAmbiguous;
+});
+
+// Method to approve requirement
+requirementSchema.methods.approve = function (reviewerId, comments = null) {
   this.status = 'approved';
-  this.reviewedBy = userId;
+  this.reviewedBy = reviewerId;
   this.reviewedAt = new Date();
-  await this.save();
-};
-
-// Instance method to reject requirement
-requirementSchema.methods.reject = async function(userId, reason) {
-  this.status = 'rejected';
-  this.reviewedBy = userId;
-  this.reviewedAt = new Date();
-  if (reason) {
-    await this.addComment(userId, reason);
+  if (comments) {
+    this.reviewComments = comments;
   }
-  await this.save();
+  return this.save();
 };
 
-// Static method to get statistics for an organization
-requirementSchema.statics.getOrganizationStats = async function(organizationId) {
-  const stats = await this.aggregate([
-    { $match: { organizationId: mongoose.Types.ObjectId(organizationId) } },
-    {
-      $group: {
-        _id: null,
-        total: { $sum: 1 },
-        duplicates: { $sum: { $cond: ['$isDuplicate', 1, 0] } },
-        conflicts: { $sum: { $cond: ['$hasConflict', 1, 0] } },
-        ambiguous: { $sum: { $cond: ['$isAmbiguous', 1, 0] } },
-        approved: { $sum: { $cond: [{ $eq: ['$status', 'approved'] }, 1, 0] } },
-        pending: { $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] } }
-      }
-    }
-  ]);
-  
-  return stats.length > 0 ? stats[0] : {
-    total: 0,
-    duplicates: 0,
-    conflicts: 0,
-    ambiguous: 0,
-    approved: 0,
-    pending: 0
-  };
+// Method to reject requirement
+requirementSchema.methods.reject = function (reviewerId, comments) {
+  this.status = 'rejected';
+  this.reviewedBy = reviewerId;
+  this.reviewedAt = new Date();
+  this.reviewComments = comments;
+  return this.save();
 };
 
-module.exports = mongoose.model('Requirement', requirementSchema);
+// Method to accept AI rewrite
+requirementSchema.methods.acceptRewrite = function (userId) {
+  if (!this.rewrittenText) {
+    throw new Error('No rewritten text available');
+  }
+  this.status = 'rewritten';
+  this.modifiedBy = userId;
+  this.isAmbiguous = false; // Rewrite resolves ambiguity
+  return this.save();
+};
+
+// Static method to get requirements by document
+requirementSchema.statics.getByDocument = function (documentId, options = {}) {
+  const query = { documentId, isDeleted: false };
+
+  if (options.status) {
+    query.status = options.status;
+  }
+
+  if (options.category) {
+    query.category = options.category;
+  }
+
+  if (options.hasIssues) {
+    query.$or = [
+      { isDuplicate: true },
+      { hasConflict: true },
+      { isAmbiguous: true }
+    ];
+  }
+
+  return this.find(query)
+    .populate('createdBy', 'name email')
+    .populate('reviewedBy', 'name email')
+    .sort({ requirementNumber: 1 })
+    .lean();
+};
+
+// Static method to get pending reviews
+requirementSchema.statics.getPendingReviews = function (organizationId) {
+  return this.find({
+    organizationId,
+    status: 'needs_review',
+    isDeleted: false
+  })
+    .populate('documentId', 'originalName')
+    .populate('createdBy', 'name email')
+    .sort({ createdAt: 1 })
+    .lean();
+};
+
+// Static method to get requirements with issues
+requirementSchema.statics.getRequirementsWithIssues = function (documentId) {
+  return this.find({
+    documentId,
+    isDeleted: false,
+    $or: [
+      { isDuplicate: true },
+      { hasConflict: true },
+      { isAmbiguous: true }
+    ]
+  })
+    .populate('duplicateOf', 'requirementNumber originalText')
+    .populate('conflictsWith', 'requirementNumber originalText')
+    .sort({ requirementNumber: 1 })
+    .lean();
+};
+
+// Pre-save hook to auto-generate requirement number if not provided
+requirementSchema.pre('save', async function (next) {
+  if (this.isNew && !this.requirementNumber) {
+    // Count existing requirements in document
+    const count = await mongoose.model('Requirement').countDocuments({
+      documentId: this.documentId,
+      isDeleted: false
+    });
+
+    // Generate number: REQ-001, REQ-002, etc.
+    this.requirementNumber = `REQ-${String(count + 1).padStart(3, '0')}`;
+  }
+  next();
+});
+
+const Requirement = mongoose.model('Requirement', requirementSchema);
+
+module.exports = Requirement;

@@ -14,11 +14,14 @@ import OwnerDashboard from './pages/dashboard/OwnerDashboard';
 import AnalystDashboard from './pages/dashboard/AnalystDashboard';
 import ReviewerDashboard from './pages/dashboard/ReviewerDashboard';
 
+// Document Pages
+import DocumentUpload from './pages/Documentupload';
+import DocumentList from './pages/DocumentList';
+
 // Role-based Dashboard Router Component
 const WorkspaceDashboard = () => {
   const { user } = useAuth();
 
-  // Redirect based on role
   if (user?.role === 'owner' || user?.role === 'admin') {
     return <OwnerDashboard />;
   } else if (user?.role === 'analyst') {
@@ -27,7 +30,6 @@ const WorkspaceDashboard = () => {
     return <ReviewerDashboard />;
   }
 
-  // Fallback - should not reach here if auth is working
   return (
     <div className="min-h-screen bg-[#0a0b0f] text-white flex items-center justify-center">
       <div className="text-center">
@@ -38,7 +40,7 @@ const WorkspaceDashboard = () => {
   );
 };
 
-// Placeholder component for "Coming Soon" pages
+// Placeholder component for pages not yet built
 const ComingSoonPage = ({ title }) => {
   return (
     <div className="min-h-screen bg-[#0a0b0f] text-white flex items-center justify-center">
@@ -65,6 +67,7 @@ function App() {
 
           {/* ========== WORKSPACE ROUTES ========== */}
           <Route path="/workspace/:slug">
+
             {/* Dashboard - All Authenticated Users */}
             <Route
               path="dashboard"
@@ -85,12 +88,32 @@ function App() {
               }
             />
 
-            {/* Upload - Owner/Admin/Analyst */}
+            {/* Upload Documents - Owner/Admin/Analyst */}
             <Route
               path="upload"
               element={
                 <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst']}>
-                  <ComingSoonPage title="Upload Documents" />
+                  <DocumentUpload />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Documents List - All Authenticated Users */}
+            <Route
+              path="documents"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <DocumentList />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Document Detail - All Authenticated Users (Phase 3) */}
+            <Route
+              path="documents/:id"
+              element={
+                <ProtectedRoute allowedRoles={['owner', 'admin', 'analyst', 'reviewer']}>
+                  <ComingSoonPage title="Document Details" />
                 </ProtectedRoute>
               }
             />
@@ -198,7 +221,7 @@ function App() {
             {/* Workspace root - redirect to dashboard */}
             <Route path="" element={<Navigate to="dashboard" replace />} />
 
-            {/* Catch-all for workspace - redirect to dashboard */}
+            {/* Catch-all inside workspace - redirect to dashboard */}
             <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Route>
 
@@ -207,7 +230,7 @@ function App() {
           <Route path="/analyst/*" element={<Navigate to="/" replace />} />
           <Route path="/reviewer/*" element={<Navigate to="/" replace />} />
 
-          {/* ========== CATCH-ALL ========== */}
+          {/* ========== GLOBAL CATCH-ALL ========== */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

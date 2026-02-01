@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const compression = require('compression');
 const connectDB = require('./config/db');
+const documentRoutes = require('./routes/documentRoutes');
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
@@ -64,7 +65,7 @@ app.use((err, req, res, next) => {
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
 });
-
+app.use('/api/documents', documentRoutes);
 // Start server
 const PORT = process.env.PORT || 5000;
 
